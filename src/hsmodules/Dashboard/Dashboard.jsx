@@ -26,7 +26,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Button, Space, Spin } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Button, Space, Skeleton } from 'antd';
 import { UserContext } from '../../context';
 import client from '../../feathers';
 import NotificationDropdown from '../../components/notifications/NotificationDropdown';
@@ -712,16 +712,13 @@ const Dashboard = ({ children }) => {
           <div style={{ flex: 1, overflow: 'auto' }}>
             <Suspense
               fallback={
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '400px',
-                    width: '100%',
-                  }}
-                >
-                  <Spin size="large" tip="Loading..." />
+                <div style={{ padding: '24px' }}>
+                  <Skeleton active paragraph={{ rows: 8 }} />
+                  <Skeleton
+                    active
+                    paragraph={{ rows: 6 }}
+                    style={{ marginTop: '24px' }}
+                  />
                 </div>
               }
             >
