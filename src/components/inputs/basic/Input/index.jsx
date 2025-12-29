@@ -1,6 +1,5 @@
 import React from 'react';
-import { StarFilled } from '@ant-design/icons';
-import { Input as AntInput } from 'antd';
+import { Input as AntInput, Tag } from 'antd';
 import { Controller } from 'react-hook-form';
 
 const Input = ({
@@ -40,9 +39,16 @@ const Input = ({
           >
             {label}
             {important && (
-              <StarFilled
-                style={{ color: 'red', fontSize: '12px', marginLeft: '4px' }}
-              />
+              <Tag
+                color="error"
+                style={{
+                  marginLeft: '8px',
+                  fontSize: '11px',
+                  padding: '0 6px',
+                }}
+              >
+                Required
+              </Tag>
             )}
           </label>
         )}
@@ -99,9 +105,12 @@ const Input = ({
         >
           {label}
           {important && (
-            <StarFilled
-              style={{ color: 'red', fontSize: '12px', marginLeft: '4px' }}
-            />
+            <Tag
+              color="error"
+              style={{ marginLeft: '8px', fontSize: '11px', padding: '0 6px' }}
+            >
+              Required
+            </Tag>
           )}
         </label>
       )}

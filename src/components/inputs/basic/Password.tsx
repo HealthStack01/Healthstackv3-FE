@@ -1,95 +1,149 @@
 import React, { useState } from 'react';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-
-import { InputBox, InputField, InputLabel } from './Input/styles';
+import { Input, Tag } from 'antd';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { Controller } from 'react-hook-form';
 
 interface PasswordInputProps {
-	label?: string;
-	name?: string;
-	// password?: string;
-	// showPassword?: boolean;
-	onChange?: (_value) => void;
-	errors?: boolean;
-	register?: any;
-	autoComplete?: string;
-	important?: boolean;
+  label?: string;
+  name?: string;
+  onChange?: (_value: any) => void;
+  errors?: string;
+  register?: any;
+  autoComplete?: string;
+  important?: boolean;
+  placeholder?: string;
+  control?: any;
+  defaultValue?: string;
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
-	label = 'Password',
-	name,
-	onChange,
-	errors,
-	register,
-	autoComplete = 'on',
-	important,
+  label = 'Password',
+  name,
+  onChange,
+  errors,
+  register,
+  autoComplete = 'on',
+  important,
+  placeholder,
+  control,
+  defaultValue = '',
 }) => {
-	const [showPassword, setShowPassword] = useState(false);
+  // If control is provided, use Controller for proper React Hook Form integration
+  if (control) {
+    return (
+      <div style={{ marginBottom: '8px', width: '100%' }}>
+        {label && (
+          <label
+            htmlFor={name}
+            style={{
+              display: 'block',
+              marginBottom: '4px',
+              fontSize: '14px',
+              color: errors ? '#ff4d4f' : '#000000d9',
+              fontWeight: 400,
+            }}
+          >
+            {label}
+            {important && (
+              <Tag
+                color="error"
+                style={{
+                  marginLeft: '8px',
+                  fontSize: '11px',
+                  padding: '0 6px',
+                }}
+              >
+                Required
+              </Tag>
+            )}
+          </label>
+        )}
+        <Controller
+          name={name || ''}
+          control={control}
+          defaultValue={defaultValue}
+          render={({ field }) => (
+            <Input.Password
+              {...field}
+              id={name}
+              placeholder={placeholder}
+              autoComplete={autoComplete}
+              status={errors ? 'error' : undefined}
+              iconRender={(visible) =>
+                visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+              }
+              style={{
+                width: '100%',
+              }}
+            />
+          )}
+        />
+        {errors && (
+          <div style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '4px' }}>
+            {errors}
+          </div>
+        )}
+      </div>
+    );
+  }
 
-	const handleClickShowPassword = () => {
-		setShowPassword(!showPassword);
-	};
+  // Handle register pattern (direct React Hook Form registration)
+  const registerProps = register || {};
+  const hasRegisterProps =
+    register &&
+    (register.onChange || register.onBlur || register.ref || register.name);
 
-	return (
-		<div>
-			<InputBox>
-				<InputField
-					className='form__input'
-					onChange={onChange}
-					type={showPassword ? 'text' : 'password'}
-					// placeholder='Password'
-					name={name}
-					{...register}
-					autoComplete={autoComplete}
-				/>
-				<InputLabel
-					className='form__label'
-					htmlFor={label}>
-					{label}
-					{important && (
-						<AcUnitIcon sx={{ color: 'red', width: '12px', height: '12px' }} />
-					)}
-				</InputLabel>
-				<span onClick={handleClickShowPassword}>
-					{showPassword ? (
-						<i className='bi bi-eye-slash-fill'></i>
-					) : (
-						<i className={' bi bi-eye-fill'}></i>
-					)}
-				</span>
-			</InputBox>
-
-			{errors && (
-				<label style={{ color: 'red', fontSize: '0.7rem', textAlign: 'left' }}>
-					{errors}
-				</label>
-			)}
-		</div>
-		// <div>
-		//   <FormControl sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined">
-		//     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-		//     <OutlinedInput
-		//       id="outlined-adornment-password"
-		//       placeholder="Enter your password"
-		//       type={showPassword ? 'text' : 'password'}
-		//       sx={{ background: 'white' }}
-		//       endAdornment={
-		//         <InputAdornment position="end">
-		//           <IconButton
-		//             aria-label="toggle password visibility"
-		//             onClick={handleClickShowPassword}
-		//             onMouseDown={handleMouseDownPassword}
-		//             edge="end"
-		//           >
-		//             {showPassword ? <VisibilityOff /> : <Visibility />}
-		//           </IconButton>
-		//         </InputAdornment>
-		//       }
-		//       {...props}
-		//     />
-		//   </FormControl>
-		// </div>
-	);
+  return (
+    <div style={{ marginBottom: '8px', width: '100%' }}>
+      {label && (
+        <label
+          htmlFor={name}
+          style={{
+            display: 'block',
+            marginBottom: '4px',
+            fontSize: '14px',
+            color: errors ? '#ff4d4f' : '#000000d9',
+            fontWeight: 400,
+          }}
+        >
+          {label}
+          {important && (
+            <Tag
+              color="error"
+              style={{ marginLeft: '8px', fontSize: '11px', padding: '0 6px' }}
+            >
+              Required
+            </Tag>
+          )}
+        </label>
+      )}
+      <Input.Password
+        id={name || registerProps.name}
+        onChange={hasRegisterProps ? registerProps.onChange : onChange}
+        onBlur={hasRegisterProps ? registerProps.onBlur : undefined}
+        placeholder={placeholder}
+        name={hasRegisterProps ? registerProps.name : name}
+        autoComplete={autoComplete}
+        status={errors ? 'error' : undefined}
+        iconRender={(visible) =>
+          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+        }
+        style={{
+          width: '100%',
+        }}
+        ref={(e) => {
+          if (hasRegisterProps && registerProps.ref) {
+            registerProps.ref(e?.input || e);
+          }
+        }}
+      />
+      {errors && (
+        <div style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '4px' }}>
+          {errors}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default PasswordInput;

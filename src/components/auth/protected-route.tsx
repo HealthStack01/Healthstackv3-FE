@@ -1,19 +1,19 @@
-import { useContext, useEffect } from 'react';
+import { useContext, ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Spin } from 'antd';
 
-import { GetUserLocation } from '../components/hooks/getUserLocation';
+import { UserContext } from '../../context';
+import { isAuthenticated } from '../../utils/authUtils';
 
-import { UserContext, ObjectContext } from '../context';
-import Dashboard from './Dashboard/Dashboard';
-import { isAuthenticated } from '../utils/authUtils';
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
 
-const PrivateOutlet = () => {
-  const objectContext = useContext(ObjectContext) as any;
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const userContext = useContext(UserContext) as any;
 
-  // Ensure contexts are available
-  if (!objectContext || !userContext) {
+  // Ensure context is available
+  if (!userContext) {
     return (
       <div
         style={{
@@ -28,20 +28,7 @@ const PrivateOutlet = () => {
     );
   }
 
-  const { state, setState } = objectContext;
   const { user, authenticatingUser } = userContext;
-
-  const { longitude, latitude } = GetUserLocation();
-
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      coordinates: {
-        latitude,
-        longitude,
-      },
-    }));
-  }, [longitude, latitude, setState]);
 
   // Show loading spinner while checking authentication
   if (authenticatingUser) {
@@ -64,7 +51,5 @@ const PrivateOutlet = () => {
   // Enhanced security check: Verify both user context and token validity
   const isAuthorized = user && isAuthenticated();
 
-  return isAuthorized ? <Dashboard /> : <Navigate to="/" />;
+  return isAuthorized ? <>{children}</> : <Navigate to="/" replace />;
 };
-
-export default PrivateOutlet;

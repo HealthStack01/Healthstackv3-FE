@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState, Suspense } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   HomeOutlined,
@@ -26,8 +26,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Button, Space } from 'antd';
-import PropTypes from 'prop-types';
+import { Breadcrumb, Layout, Menu, theme, Button, Space, Spin } from 'antd';
 import { UserContext } from '../../context';
 import client from '../../feathers';
 import NotificationDropdown from '../../components/notifications/NotificationDropdown';
@@ -711,17 +710,28 @@ const Dashboard = ({ children }) => {
             style={{ marginBottom: 16, cursor: 'pointer', flexShrink: 0 }}
           />
           <div style={{ flex: 1, overflow: 'auto' }}>
-            {children}
-            <Outlet />
+            <Suspense
+              fallback={
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '400px',
+                    width: '100%',
+                  }}
+                >
+                  <Spin size="large" tip="Loading..." />
+                </div>
+              }
+            >
+              <Outlet />
+            </Suspense>
           </div>
         </Content>
       </Layout>
     </Layout>
   );
-};
-
-Dashboard.propTypes = {
-  children: PropTypes.node,
 };
 
 export default Dashboard;

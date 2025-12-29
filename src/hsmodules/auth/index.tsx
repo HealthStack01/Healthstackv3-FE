@@ -20,9 +20,9 @@ import {
   LockOutlined,
   MailOutlined,
 } from '@ant-design/icons';
+import secureStorage from '../../utils/secureStorage';
 
 import AuthWrapper from '../../components/AuthWrapper';
-import Preloader from '../../components/utilities/Preloader';
 import { UserContext } from '../../context';
 import client from '../../feathers';
 
@@ -99,8 +99,6 @@ function Login() {
   };
 
   const loginprocess = async (res, user) => {
-    const secureStorage = (await import('../../utils/secureStorage')).default;
-
     setUser(user);
     secureStorage.setUser(user);
     setLoading(false);
@@ -124,165 +122,155 @@ function Login() {
   };
 
   return (
-    <>
-      {loaderTimer ? (
-        <Preloader />
-      ) : (
-        <AuthWrapper paragraph="Login here as an organization">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Modal
-              open={chooseModal}
-              title="Choose Facility"
-              footer={null}
-              closable={false}
-            >
-              <Space
-                direction="vertical"
-                style={{ width: '100%' }}
-                size="small"
-              >
-                {resp?.user?.employeeData.map((fac: any, i: number) => (
-                  <Button
-                    key={i}
-                    type="primary"
-                    block
-                    onClick={() => handlefacility(fac)}
-                  >
-                    {fac.facilityDetail.facilityName}
-                  </Button>
-                ))}
-              </Space>
-            </Modal>
-
-            <Space direction="vertical" style={{ width: '100%' }} size="large">
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder="Email"
-                    prefix={<MailOutlined />}
-                    size="large"
-                  />
-                )}
-              />
-
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <Input.Password
-                    {...field}
-                    placeholder="Password"
-                    prefix={<LockOutlined />}
-                    size="large"
-                  />
-                )}
-              />
-
-              <Checkbox
-                checked={keepMeIn}
-                onChange={(e) => setKeepMeIn(e.target.checked)}
-              >
-                Keep me Logged in
-              </Checkbox>
-
+    <AuthWrapper paragraph="Login here as an organization">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Modal
+          open={chooseModal}
+          title="Choose Facility"
+          footer={null}
+          closable={false}
+        >
+          <Space direction="vertical" style={{ width: '100%' }} size="small">
+            {resp?.user?.employeeData.map((fac: any, i: number) => (
               <Button
+                key={i}
                 type="primary"
-                htmlType="submit"
-                icon={<LoginOutlined />}
-                loading={loading}
                 block
-                size="large"
+                onClick={() => handlefacility(fac)}
               >
-                Login
+                {fac.facilityDetail.facilityName}
               </Button>
-            </Space>
-          </form>
+            ))}
+          </Space>
+        </Modal>
 
-          <div
-            style={{
-              display: 'flex',
-              height: '40px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: '16px',
-              borderRadius: '4px',
-            }}
+        <Space direction="vertical" style={{ width: '100%' }} size="large">
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="email"
+                placeholder="Email"
+                prefix={<MailOutlined />}
+                size="large"
+              />
+            )}
+          />
+
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <Input.Password
+                {...field}
+                placeholder="Password"
+                prefix={<LockOutlined />}
+                size="large"
+              />
+            )}
+          />
+
+          <Checkbox
+            checked={keepMeIn}
+            onChange={(e) => setKeepMeIn(e.target.checked)}
           >
-            <Text>
-              Forgot password?{' '}
-              <Link
-                to="/forgot-password"
-                style={{
-                  color: '#1890ff',
-                  textDecoration: 'none',
-                }}
-              >
-                Click here
-              </Link>
-            </Text>
-          </div>
+            Keep me Logged in
+          </Checkbox>
 
-          <Divider>or continue with</Divider>
-
-          <Space
-            style={{
-              width: '100%',
-              justifyContent: 'center',
-              marginBottom: '16px',
-            }}
+          <Button
+            type="primary"
+            htmlType="submit"
+            icon={<LoginOutlined />}
+            loading={loading}
+            block
             size="large"
           >
-            <Button
-              type="default"
-              shape="circle"
-              icon={<GoogleOutlined />}
-              size="large"
-            />
-            <Button
-              type="default"
-              shape="circle"
-              icon={<FacebookOutlined />}
-              size="large"
-            />
-            <Button
-              type="default"
-              shape="circle"
-              icon={<LinkedinOutlined />}
-              size="large"
-            />
-          </Space>
+            Login
+          </Button>
+        </Space>
+      </form>
 
-          <div
+      <div
+        style={{
+          display: 'flex',
+          height: '40px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: '16px',
+          borderRadius: '4px',
+        }}
+      >
+        <Text>
+          Forgot password?{' '}
+          <Link
+            to="/forgot-password"
             style={{
-              display: 'flex',
-              height: '40px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '4px',
+              color: '#1890ff',
+              textDecoration: 'none',
             }}
           >
-            <Text>
-              Want to create organization?{' '}
-              <Link
-                to="/signup"
-                style={{
-                  color: '#1890ff',
-                  textDecoration: 'none',
-                }}
-              >
-                Click here
-              </Link>
-            </Text>
-          </div>
-        </AuthWrapper>
-      )}
-    </>
+            Click here
+          </Link>
+        </Text>
+      </div>
+
+      <Divider>or continue with</Divider>
+
+      <Space
+        style={{
+          width: '100%',
+          justifyContent: 'center',
+          marginBottom: '16px',
+        }}
+        size="large"
+      >
+        <Button
+          type="default"
+          shape="circle"
+          icon={<GoogleOutlined />}
+          size="large"
+        />
+        <Button
+          type="default"
+          shape="circle"
+          icon={<FacebookOutlined />}
+          size="large"
+        />
+        <Button
+          type="default"
+          shape="circle"
+          icon={<LinkedinOutlined />}
+          size="large"
+        />
+      </Space>
+
+      <div
+        style={{
+          display: 'flex',
+          height: '40px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '4px',
+        }}
+      >
+        <Text>
+          Want to create organization?{' '}
+          <Link
+            to="/signup"
+            style={{
+              color: '#1890ff',
+              textDecoration: 'none',
+            }}
+          >
+            Click here
+          </Link>
+        </Text>
+      </div>
+    </AuthWrapper>
   );
 }
 

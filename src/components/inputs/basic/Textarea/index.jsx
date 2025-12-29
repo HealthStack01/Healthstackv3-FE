@@ -1,7 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { Input } from "antd";
-import { StarFilled } from "@ant-design/icons";
+import { Input, Tag } from "antd";
 
 const { TextArea: AntTextArea } = Input;
 
@@ -36,7 +35,9 @@ const Textarea = ({
           >
             {label}
             {important && (
-              <StarFilled style={{ color: "red", fontSize: "12px", marginLeft: "4px" }} />
+              <Tag color="error" style={{ marginLeft: "8px", fontSize: "10px" }}>
+                Required
+              </Tag>
             )}
           </label>
         )}
@@ -87,7 +88,9 @@ const Textarea = ({
         >
           {label}
           {important && (
-            <StarFilled style={{ color: "red", fontSize: "12px", marginLeft: "4px" }} />
+            <Tag color="error" style={{ marginLeft: "8px", fontSize: "10px" }}>
+              Required
+            </Tag>
           )}
         </label>
       )}

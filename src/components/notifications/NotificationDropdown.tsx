@@ -181,7 +181,15 @@ const NotificationDropdown: React.FC = () => {
   };
 
   const notificationContent = (
-    <div style={{ width: 380, maxHeight: 500, overflow: 'auto' }}>
+    <div
+      style={{
+        width: 380,
+        maxHeight: 500,
+        overflow: 'auto',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+      }}
+    >
       {/* Header */}
       <div
         style={{

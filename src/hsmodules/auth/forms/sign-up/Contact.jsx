@@ -1,95 +1,117 @@
-import {useState, useEffect} from "react";
-import {Box} from "@mui/material";
+import { Space, Typography, Divider } from 'antd';
+import Input from '../../../../components/inputs/basic/Input';
+import GoogleAddressInput from '../../../../components/google-autocomplete';
 
-import {Nigeria} from "../../../app/Nigeria";
-import Input from "../../../../components/inputs/basic/Input";
-import CustomSelect from "../../../../components/inputs/basic/Select";
-import GoogleAddressInput from "../../../../components/google-autocomplete";
+const { Text } = Typography;
 
-const ContactForm = ({register, control, watch, errors, setValue}) => {
-  // const [selectedState, setSelectedState] = useState(null);
-  // const states = Nigeria.map(obj => obj.state);
-
-  // //alphabetically arrange state
-  // const sortedStates = states.sort((a, b) => a.localeCompare(b));
-
-  // const state = watch("facilityState");
-
-  // useEffect(() => {
-  //   setSelectedState(Nigeria.find(item => item.state === state));
-  //   setValue("facilityCity", "");
-  //   setValue("facilityLGA", "");
-  // }, [state]);
-
-  //const selectedState = Nigeria.find(item => item.state === state);
-  //console.log(selectedState);
-
-  const handleGoogleAddressSelect = obj => {
-    //console.log(obj);
-    setValue("facilityAddress", obj.address);
-    setValue("facilityState", obj.state);
-    setValue("facilityCity", obj.lga);
-    setValue("facilityLGA", obj.lga);
-    setValue("facilityCountry", obj.country);
+const ContactForm = ({ register, control, watch, errors, setValue }) => {
+  const handleGoogleAddressSelect = (obj) => {
+    setValue('facilityAddress', obj.address);
+    setValue('facilityState', obj.state);
+    setValue('facilityCity', obj.lga);
+    setValue('facilityLGA', obj.lga);
+    setValue('facilityCountry', obj.country);
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-      gap={2}
-    >
-      <GoogleAddressInput
-        label="Official Address"
-        register={register("facilityAddress")}
-        getSelectedAddress={handleGoogleAddressSelect}
-        errorText={errors?.facilityAddress?.message}
-      />
+    <div style={{ width: '100%' }}>
+      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <div>
+          <Text
+            strong
+            style={{
+              fontSize: '0.9rem',
+              marginBottom: '0.5rem',
+              display: 'block',
+            }}
+          >
+            Contact Information
+          </Text>
+        </div>
 
-      <Input
-        label="LGA"
-        register={register("facilityLGA")}
-        errorText={errors?.facilityLGA?.message}
-        important
-      />
+        <Input
+          label="Official Address"
+          control={control}
+          name="facilityAddress"
+          errorText={errors?.facilityAddress?.message}
+          important
+          placeholder="Enter and select address from suggestions"
+        />
 
-      <Input
-        label="City"
-        register={register("facilityCity")}
-        errorText={errors?.facilityCity?.message}
-        important
-      />
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '0.75rem',
+          }}
+        >
+          <Input
+            label="LGA"
+            control={control}
+            name="facilityLGA"
+            errorText={errors?.facilityLGA?.message}
+            important
+            placeholder="Local Government Area"
+          />
 
-      <Input
-        label="State"
-        register={register("facilityState")}
-        errorText={errors?.facilityState?.message}
-        important
-      />
-      <Input
-        label="Country"
-        register={register("facilityCountry")}
-        errorText={errors?.facilityCountry?.message}
-        important
-      />
+          <Input
+            label="City"
+            control={control}
+            name="facilityCity"
+            errorText={errors?.facilityCity?.message}
+            important
+            placeholder="City"
+          />
+        </div>
 
-      <Input
-        label="Phone Number"
-        register={register("facilityContactPhone")}
-        errorText={errors?.facilityContactPhone?.message}
-        important
-      />
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '0.75rem',
+          }}
+        >
+          <Input
+            label="State"
+            control={control}
+            name="facilityState"
+            errorText={errors?.facilityState?.message}
+            important
+            placeholder="State"
+          />
 
-      <Input
-        label="Email Address"
-        register={register("facilityEmail")}
-        errorText={errors?.facilityEmail?.message}
-        important
-      />
-    </Box>
+          <Input
+            label="Country"
+            control={control}
+            name="facilityCountry"
+            errorText={errors?.facilityCountry?.message}
+            important
+            placeholder="Country"
+          />
+        </div>
+
+        <Divider style={{ margin: '0.5rem 0' }} />
+
+        <Input
+          label="Phone Number"
+          control={control}
+          name="facilityContactPhone"
+          errorText={errors?.facilityContactPhone?.message}
+          important
+          placeholder="e.g., 08012345678 (11 digits starting with 0)"
+        />
+
+        <Input
+          label="Email Address"
+          control={control}
+          name="facilityEmail"
+          errorText={errors?.facilityEmail?.message}
+          important
+          placeholder="organization@example.com"
+          type="email"
+        />
+      </Space>
+    </div>
   );
 };
 

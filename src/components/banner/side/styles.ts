@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const SideBanner = styled.div`
   width: 35%;
-  height: 100vh;
-  background: ${({theme}) => theme.primary};
+  height: 95vh;
+  background: ${({ theme }) => theme.primary};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,6 +11,10 @@ export const SideBanner = styled.div`
   overflow-y: hidden;
   position: relative;
   padding-top: 20rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  border-radius: 1.25rem;
+  margin-left: 2rem;
 
   & .fixed {
     width: 100%;
@@ -21,7 +25,7 @@ export const SideBanner = styled.div`
   }
 
   & h1 {
-    color: ${({theme}) => theme.btnText};
+    color: ${({ theme }) => theme.btnText};
     width: 20rem;
     font-size: 2.56rem;
     margin-top: 2.19rem;
@@ -29,7 +33,7 @@ export const SideBanner = styled.div`
   }
 
   & ul {
-    color: ${({theme}) => theme.btnText};
+    color: ${({ theme }) => theme.btnText};
     width: 20rem;
     font-size: 0.96rem;
     & li {

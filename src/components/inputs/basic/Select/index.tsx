@@ -1,7 +1,6 @@
-import React from "react";
-import { Controller } from "react-hook-form";
-import { Select as AntSelect } from "antd";
-import { StarFilled } from "@ant-design/icons";
+import React from 'react';
+import { Controller } from 'react-hook-form';
+import { Select as AntSelect, Tag } from 'antd';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
@@ -51,26 +50,35 @@ const CustomSelect: React.FC<SelectProps> = ({
 
   if (control)
     return (
-      <div style={{ marginBottom: "8px", width: "100%", ...sx }}>
+      <div style={{ marginBottom: '8px', width: '100%', ...sx }}>
         {label && (
           <label
             htmlFor={name}
             style={{
-              display: "block",
-              marginBottom: "4px",
-              fontSize: "14px",
-              color: errorText ? "#ff4d4f" : "#000000d9",
+              display: 'block',
+              marginBottom: '4px',
+              fontSize: '14px',
+              color: errorText ? '#ff4d4f' : '#000000d9',
               fontWeight: 400,
             }}
           >
             {label}
             {important && (
-              <StarFilled style={{ color: "red", fontSize: "12px", marginLeft: "4px" }} />
+              <Tag
+                color="error"
+                style={{
+                  marginLeft: '8px',
+                  fontSize: '11px',
+                  padding: '0 6px',
+                }}
+              >
+                Required
+              </Tag>
             )}
           </label>
         )}
         <Controller
-          name={name || ""}
+          name={name || ''}
           defaultValue={defaultValue}
           control={control}
           rules={{ required: required }}
@@ -84,16 +92,16 @@ const CustomSelect: React.FC<SelectProps> = ({
               onChange={onChange}
               disabled={disabled || readonly}
               options={antOptions}
-              status={errorText || error ? "error" : undefined}
+              status={errorText || error ? 'error' : undefined}
               style={{
-                width: "100%",
+                width: '100%',
               }}
-              placeholder={`Select ${label || "option"}...`}
+              placeholder={`Select ${label || 'option'}...`}
             />
           )}
         />
         {errorText && (
-          <div style={{ color: "#ff4d4f", fontSize: "12px", marginTop: "4px" }}>
+          <div style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '4px' }}>
             {errorText}
           </div>
         )}
@@ -101,21 +109,26 @@ const CustomSelect: React.FC<SelectProps> = ({
     );
 
   return (
-    <div style={{ marginBottom: "8px", width: "100%", ...sx }}>
+    <div style={{ marginBottom: '8px', width: '100%', ...sx }}>
       {label && (
         <label
           htmlFor={name}
           style={{
-            display: "block",
-            marginBottom: "4px",
-            fontSize: "14px",
-            color: errorText ? "#ff4d4f" : "#000000d9",
+            display: 'block',
+            marginBottom: '4px',
+            fontSize: '14px',
+            color: errorText ? '#ff4d4f' : '#000000d9',
             fontWeight: 400,
           }}
         >
           {label}
           {important && (
-            <StarFilled style={{ color: "red", fontSize: "12px", marginLeft: "4px" }} />
+            <Tag
+              color="error"
+              style={{ marginLeft: '8px', fontSize: '11px', padding: '0 6px' }}
+            >
+              Required
+            </Tag>
           )}
         </label>
       )}
@@ -125,15 +138,15 @@ const CustomSelect: React.FC<SelectProps> = ({
         onChange={onChange}
         options={antOptions}
         value={value || defaultValue}
-        status={errorText ? "error" : undefined}
+        status={errorText ? 'error' : undefined}
         style={{
-          width: "100%",
+          width: '100%',
         }}
-        placeholder={`Select ${label || "option"}...`}
+        placeholder={`Select ${label || 'option'}...`}
         {...register}
       />
       {errorText && (
-        <div style={{ color: "#ff4d4f", fontSize: "12px", marginTop: "4px" }}>
+        <div style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '4px' }}>
           {errorText}
         </div>
       )}

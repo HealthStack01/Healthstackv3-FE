@@ -1,60 +1,56 @@
-import {useContext, useEffect, useReducer, useState} from "react";
-import {Box, Typography} from "@mui/material";
-import {useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
-import CircularProgress from "@mui/material/CircularProgress";
-import {Link, useNavigate} from "react-router-dom";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+import { useContext, useEffect, useReducer, useState } from 'react';
+import { Typography, Spin, Checkbox } from 'antd';
+import {
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Link, useNavigate } from 'react-router-dom';
 
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-
-import CreateOrganizationStepper from "./stepper";
-import OrganizationForm from "./Organization";
-import ContactForm from "./Contact";
-import AdminForm from "./Admin";
-import ModulesForm from "./Module";
-import Side from "../../../../components/banner/side";
-import GlobalCustomButton from "../../../../components/buttons/CustomButton";
+import CreateOrganizationStepper from './stepper';
+import OrganizationForm from './Organization';
+import ContactForm from './Contact';
+import AdminForm from './Admin';
+import Side from '../../../../components/banner/side';
+import GlobalCustomButton from '../../../../components/buttons/CustomButton';
 import {
   adminValidationSchema,
   contactValidationSchema,
   organizationValidationSchema,
-} from "./schemas";
-import AnimatedDots from "../../../../components/animated-dots/animated-dots";
-import client from "../../../../feathers";
-import {toast} from "react-toastify";
-import {UserContext} from "../../../../context";
-import {orgTypeModules} from "../../../app/app-modules";
+} from './schemas';
+import AnimatedDots from '../../../../components/animated-dots/animated-dots';
+import client from '../../../../feathers';
+import { toast } from 'react-toastify';
+import { UserContext } from '../../../../context';
+import { orgTypeModules } from '../../../app/app-modules';
 
-const steps = ["Organization", "Contact", "Admin"];
+const steps = ['Organization', 'Contact', 'Admin'];
 
 const initState = {
   organizationData: {
     facilityModules: [],
-    facilityName: "",
-    facilityType: "",
-    facilityCategory: "",
-    facilityCAC: "",
-    facilityAddress: "",
-    facilityState: "",
-    facilityCity: "",
-    facilityLGA: "",
-    facilityCountry: "",
-    facilityContactPhone: "",
-    facilityEmail: "",
-    facilityOwner: "",
+    facilityName: '',
+    facilityType: '',
+    facilityCategory: '',
+    facilityCAC: '',
+    facilityAddress: '',
+    facilityState: '',
+    facilityCity: '',
+    facilityLGA: '',
+    facilityCountry: '',
+    facilityContactPhone: '',
+    facilityEmail: '',
+    facilityOwner: '',
     //facilityCreated: "",
   },
   adminData: {},
 };
 
 const OrganizationSignup = () => {
-  const FacilityServ = client.service("facility");
-  const EmployeeServ = client.service("employee");
+  const FacilityServ = client.service('facility');
+  const EmployeeServ = client.service('employee');
   //const [state, dispatch] = useReducer(reducer, initState);
   // const [data, setData] = useState({});
   const [activeStep, setActiveStep] = useState(0);
@@ -63,7 +59,7 @@ const OrganizationSignup = () => {
   const [creatingOrganizaiton, setCreatingOrganization] = useState(false);
   const [creatingAdmin, setcreatingAdmin] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
-  const {user, setUser} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
@@ -76,7 +72,7 @@ const OrganizationSignup = () => {
     handleSubmit: handleSubmitOrgnization,
     watch: organizationWatch,
     setValue: organizationSetValue,
-    formState: {errors: organizationErrors},
+    formState: { errors: organizationErrors },
   } = useForm({
     resolver: yupResolver(organizationValidationSchema),
   });
@@ -88,30 +84,20 @@ const OrganizationSignup = () => {
     handleSubmit: handleSubmitContact,
     setValue: contactSetValue,
     watch: contactWatch,
-    formState: {errors: contactErrors},
-  } = useForm({resolver: yupResolver(contactValidationSchema)});
+    formState: { errors: contactErrors },
+  } = useForm({ resolver: yupResolver(contactValidationSchema) });
 
-  //HOOK FORM FOR MODULES STEP
-  const {
-    register: modulesRegister,
-    control: modulesControl,
-    handleSubmit: handleSubmitModules,
-    reset: modulesReset,
-    setValue: modulesSetValue,
-  } = useForm();
-
-  //HOOK FORM FOR ADMIN STEPS
   const {
     register: adminRegister,
     control: adminControl,
     handleSubmit: handleSubmitAdmin,
-    formState: {errors: adminErrors},
-  } = useForm({resolver: yupResolver(adminValidationSchema)});
+    formState: { errors: adminErrors },
+  } = useForm({ resolver: yupResolver(adminValidationSchema) });
 
-  const handleGetData = data => {
-    setActiveStep(prev => prev + 1);
+  const handleGetData = (data) => {
+    setActiveStep((prev) => prev + 1);
 
-    return setFacilityData(prev => ({
+    return setFacilityData((prev) => ({
       ...prev,
       ...data,
     }));
@@ -123,7 +109,16 @@ const OrganizationSignup = () => {
         handleSubmitOrgnization(handleGetData)();
         return;
       case 1:
-        return handleSubmitContact(handleGetData)();
+        handleSubmitContact(
+          (data) => {
+            console.log('Contact form data:', data);
+            handleGetData(data);
+          },
+          (errors) => {
+            console.log('Contact form validation errors:', errors);
+          },
+        )();
+        return;
       case 2:
         return handleSubmitAdmin(handleCompleteRegistration)();
       default:
@@ -132,54 +127,77 @@ const OrganizationSignup = () => {
   };
 
   const hanldeGoToPrevForm = () => {
-    setActiveStep(prev => prev - 1);
+    setActiveStep((prev) => prev - 1);
   };
 
-  const handleCompleteRegistration = async data => {
+  const handleCompleteRegistration = async (data) => {
     if (!agreedToTerms)
-      return toast.error("Please agree to our Terms and Conditions");
+      return toast.error('Please agree to our Terms and Conditions');
     setCreatingOrganization(true);
 
     const selectedType = orgTypeModules.find(
-      item => item.name === facilityData.facilityType
+      (item) => item.name === facilityData.facilityType,
     );
 
     const facilityDocument = {
       ...facilityData,
-      facilityModules: selectedType ? selectedType.modules : ["Admin"],
-      hasEmployee: true,
-      employeeData: {
-        ...data,
-        roles: selectedType ? selectedType.modules : ["Admin"],
-      },
+      facilityModules: selectedType ? selectedType.modules : ['Admin'],
     };
 
-    await FacilityServ.create(facilityDocument)
-      .then(async res => {
-        toast.success("Organization Account successfully Created");
-        setCreatingOrganization(false);
-        setSigningIn(true);
-        //console.log(res);
+    console.log('Facility Document being sent:', facilityDocument);
+    console.log('Facility Data accumulated:', facilityData);
+    console.log('Admin Data:', data);
 
-        await client
-          .authenticate({
-            strategy: "local",
-            email: data.email,
-            password: data.password,
+    await FacilityServ.create(facilityDocument)
+      .then(async (res) => {
+        console.log('Facility created:', res);
+        
+        // Now create the employee with the facility ID
+        const employeeData = {
+          ...data,
+          facility: res._id,
+          facilityDetail: res,
+          roles: selectedType ? selectedType.modules : ['Admin'],
+        };
+
+        console.log('Creating employee with data:', employeeData);
+        setcreatingAdmin(true);
+
+        await EmployeeServ.create(employeeData)
+          .then(async (employeeRes) => {
+            console.log('Employee created:', employeeRes);
+            toast.success('Organization Account successfully Created');
+            setCreatingOrganization(false);
+            setcreatingAdmin(false);
+            setSigningIn(true);
+
+            await client
+              .authenticate({
+                strategy: 'local',
+                email: data.email,
+                password: data.password,
+              })
+              .then((authRes) => {
+                const user = {
+                  ...authRes.user,
+                  currentEmployee: employeeRes,
+                };
+                localStorage.setItem('user', JSON.stringify(user));
+                setUser(user);
+                toast.success('You have successfully been logged in');
+                setSigningIn(false);
+                navigate('/app');
+              });
           })
-          .then(res => {
-            const user = {
-              ...res.user,
-              currentEmployee: {...res.user.employeeData[0]},
-            };
-            localStorage.setItem("user", JSON.stringify(user));
-            setUser(user);
-            toast.success("You have successfully been logged in");
+          .catch((err) => {
+            setCreatingOrganization(false);
+            setcreatingAdmin(false);
             setSigningIn(false);
-            navigate("/app");
+            toast.error(`Error creating admin account: ${err.message || err}`);
+            console.error('Employee creation error:', err);
           });
       })
-      .catch(err => {
+      .catch((err) => {
         setCreatingOrganization(false);
         // setcreatingAdmin(false);
         setSigningIn(false);
@@ -212,132 +230,130 @@ const OrganizationSignup = () => {
         );
 
       case 2:
-        return <AdminForm register={adminRegister} errors={adminErrors} />;
+        return (
+          <AdminForm
+            register={adminRegister}
+            control={adminControl}
+            errors={adminErrors}
+          />
+        );
       default:
         return <div>Not Found</div>;
     }
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
+    <div
+      style={{
+        display: 'flex',
       }}
     >
       {(creatingOrganizaiton || creatingAdmin || signingIn) && (
-        <Box
-          sx={{
-            position: "fixed",
+        <div
+          style={{
+            position: 'fixed',
             top: 0,
             left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: "999999",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(0, 0, 0, 0.7)",
+            width: '100vw',
+            height: '100vh',
+            zIndex: '999999',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(0, 0, 0, 0.7)',
+            gap: '2rem',
           }}
-          gap={4}
         >
-          <CircularProgress />
-          {creatingOrganizaiton && (
-            <AnimatedDots text="Creating Organization Account" />
-          )}
-
-          {creatingAdmin && <AnimatedDots text="Creating Admin Account" />}
-
-          {signingIn && <AnimatedDots text="Signing you into Admin Account" />}
-        </Box>
+          <Spin size="large" />
+        </div>
       )}
 
       <Side />
 
-      <Box
-        sx={{
-          
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          margin:"auto"
-          // backgroundColor: "#f8f8f8", // width: "65%",
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: 'auto',
+          padding: '2rem 1rem',
+          overflowY: 'auto',
         }}
       >
-        <Box mb={4}>
-          <Typography sx={{fontWeight: "600"}}>
+        <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+          <Typography.Title level={3} style={{ fontWeight: '600', margin: 0 }}>
             Create An Organization
-          </Typography>
-        </Box>
+          </Typography.Title>
+          <Typography.Text type="secondary" style={{ fontSize: '0.875rem' }}>
+            Complete the steps below to set up your healthcare facility
+          </Typography.Text>
+        </div>
 
-        <Box
-          sx={{
-            width: "30rem",
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '35rem',
+            marginBottom: '1.5rem',
           }}
-          mb={3}
         >
           <CreateOrganizationStepper steps={steps} activeStep={activeStep} />
-        </Box>
+        </div>
 
-        <Box
-          sx={{
-            width: "25rem",
-            padding: "15px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #f0f0f0",
-            // boxShadow: "3",
-            // maxHeight: "25rem",
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '35rem',
+            padding: '1.5rem',
+            backgroundColor: '#ffffff',
+            border: '1px solid #e8e8e8',
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+            marginBottom: '1rem',
+            maxHeight: '60vh',
+            overflowY: 'auto',
           }}
-          mb={1.5}
         >
           {ActiveFormStep(activeStep)}
-        </Box>
+        </div>
 
         {activeStep === steps.length - 1 && (
-          <Box
-            sx={{
-              width: "25rem",
-              display: "flex",
-              justifyContent: "flex-start",
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '35rem',
+              display: 'flex',
+              justifyContent: 'flex-start',
+              marginBottom: '1rem',
             }}
-            mb={1}
           >
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={agreedToTerms}
-                    onChange={e => setAgreedToTerms(e.target.checked)}
-                  />
-                }
-                label={
-                  <Typography
-                    sx={{
-                      fontSize: "0.8rem",
-                    }}
-                  >
-                    Please confrm that you agree to our
-                    <GlobalCustomButton
-                      variant="text"
-                      onClick={() => console.log("hello world")}
-                    >
-                      Terms & Condtions
-                    </GlobalCustomButton>
-                  </Typography>
-                }
-              />
-            </FormGroup>
-          </Box>
+            <Checkbox
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+            >
+              <Typography.Text style={{ fontSize: '0.875rem' }}>
+                I agree to the{' '}
+                <GlobalCustomButton
+                  variant="text"
+                  onClick={() => console.log('hello world')}
+                  style={{ padding: '0 4px', height: 'auto' }}
+                >
+                  Terms & Conditions
+                </GlobalCustomButton>
+              </Typography.Text>
+            </Checkbox>
+          </div>
         )}
 
-        <Box
-          sx={{
-            display: "flex",
-            width: "25rem",
-            justifyContent: "space-between",
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            maxWidth: '35rem',
+            justifyContent: 'space-between',
+            marginBottom: '1rem',
           }}
         >
           <GlobalCustomButton
@@ -345,55 +361,52 @@ const OrganizationSignup = () => {
             disabled={activeStep === 0}
             color="warning"
           >
-            <ArrowBackIcon fontSize="small" sx={{marginRight: "5px"}} />
+            <ArrowLeftOutlined style={{ marginRight: '5px' }} />
             Prev Step
           </GlobalCustomButton>
 
           {activeStep === steps.length - 1 ? (
             <GlobalCustomButton onClick={handleGoToNextForm}>
-              <TaskAltIcon fontSize="small" sx={{marginRight: "5px"}} />
+              <CheckCircleOutlined style={{ marginRight: '5px' }} />
               Complete Registration
             </GlobalCustomButton>
           ) : (
             <GlobalCustomButton onClick={handleGoToNextForm} color="success">
               Next Step
-              <ArrowForwardIcon fontSize="small" sx={{marginLeft: "5px"}} />
+              <ArrowRightOutlined style={{ marginLeft: '5px' }} />
             </GlobalCustomButton>
           )}
-        </Box>
+        </div>
 
-        <Box
-          sx={{
-            display: "flex",
-            height: "40px",
-            width: "25rem",
-            //boxShadow: 3,
-            alignItems: "center",
-            justifyContent: "center",
-            //backgroundColor: "#fffffff",
-            backgroundColor: "#ffffff",
-            border: "1px solid #f0f0f0",
+        <div
+          style={{
+            display: 'flex',
+            height: '50px',
+            width: '100%',
+            maxWidth: '35rem',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#ffffff',
+            border: '1px solid #e8e8e8',
+            borderRadius: '8px',
           }}
-          mt={2}
         >
-          <p style={{padding: "0"}}>
-            Have an account?
+          <Typography.Text style={{ fontSize: '0.875rem' }}>
+            Already have an account?{' '}
             <Link
-              className="nav-link"
-              style={{
-                padding: "0",
-                background: "transparent",
-                color: "blue",
-                marginLeft: "0.6rem",
-              }}
               to="/"
+              style={{
+                color: '#1890ff',
+                textDecoration: 'none',
+                fontWeight: 500,
+              }}
             >
-              Login
+              Sign In
             </Link>
-          </p>
-        </Box>
-      </Box>
-    </Box>
+          </Typography.Text>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -101,7 +101,15 @@ const LocationSelector: React.FC = () => {
   };
 
   const locationContent = (
-    <div style={{ width: 320, maxHeight: 400, overflow: 'auto' }}>
+    <div
+      style={{
+        width: 320,
+        maxHeight: 400,
+        overflow: 'auto',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+      }}
+    >
       {/* Header */}
       <div
         style={{
