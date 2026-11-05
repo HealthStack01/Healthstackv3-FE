@@ -5,7 +5,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import BlockIcon from "@mui/icons-material/Block";
 import {v4 as uuidv4} from "uuid";
 
-import "./styles.scss";
+// import "./styles.scss";
 import GlobalCustomButton from "../../../../components/buttons/CustomButton";
 import {ObjectContext, UserContext} from "../../../../context";
 import client from "../../../../feathers";

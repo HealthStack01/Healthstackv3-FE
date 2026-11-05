@@ -46,5 +46,13 @@ export default defineConfig(({ mode }) => {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
       },
     },
+    css: {
+    preprocessorOptions: {
+      scss: {
+        // Forces Vite to use the correct compiler API
+        api: 'legacy' 
+      }
+    }
+  }
   };
 });
